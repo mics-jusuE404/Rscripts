@@ -27,7 +27,7 @@ Otsu_NGS <- function(COUNTS){
     mF   <- (sum1-sumB)/ wF
     interVar <- wB*wF*(mB-mF)*(mB-mF)
     if (interVar > maxi) {
-      maxi.level <- tmp.tabname[q] #maxi.level is the greatest value that still belongs to the background/lower class
+      maxi.level <- tmp.tabname[q] # maxi.level is the largest value that still belongs to the lower group
       maxi <- interVar
     }
   }
