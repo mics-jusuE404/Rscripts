@@ -1,4 +1,4 @@
-#### Take a list of integers and fina a threshold that splits these integers into two groups,
+#### Take a list of integers and find a threshold that splits these integers into two groups,
 #### aiming to minimize intragroup variance but maximize intergroup variance.
 #### Based on Otsu's threshold and code pretty much copied from <https://en.wikipedia.org/wiki/Otsu%27s_method>
 #### Modifications are the log10 transformation to make it suitable for larger numbers as common in NGS.
