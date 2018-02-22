@@ -79,7 +79,12 @@ plot.Profile <- function(foreground.data, background.data, main){
   )
   lines(colMeans(Smaller), lwd=1, col="darkblue")  
   
-  axis(side = 1, at = c(1, ncol(foreground.data)/2, ncol(foreground.data)), labels=c("-10kb", "0kb", "+10kb")) 
+  wsize <- dim(foreground.data)[2] / 2
+  lower <- paste("-", 0.001*dim(foreground.data)[2]/2, "kb", sep="")
+  upper <- paste("+", 0.001*dim(foreground.data)[2]/2, "kb", sep="")
+  
+  axis(side = 1, at = c(1, ncol(foreground.data)/2, ncol(foreground.data)), labels=c(lower, "0kb", upper)) 
+   
   legend("topright", legend=c("Enhancers", "Background"), bty="n", lty=1, lwd=1, col=c("firebrick", "darkblue"))
 }
 
