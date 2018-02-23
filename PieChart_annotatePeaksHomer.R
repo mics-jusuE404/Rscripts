@@ -1,6 +1,6 @@
 #### A little dirty but functional script that reads the default output of annotatePeaks.pl from HOMER
 #### and plots the number of peaks per genomic feature as a pie chart:
-#### Author: Alexander Toenges (2016)
+#### Author: Alexander Toenges (2016) a.toenges@uni-muenster.de
 
 PieChart_annotatePeaksHomer <- function(AnnotFile, CustomTitle){
   
