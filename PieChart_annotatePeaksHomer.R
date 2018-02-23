@@ -9,8 +9,9 @@ PieChart_annotatePeaksHomer <- function(AnnotFile, CustomTitle){
   
   ## Load homer output:
   AnnotFile <- fread(AnnotFile, data.table=FALSE, header=TRUE)
+  ## Crude check if the first colname if OK
   if(grepl('PeakID', colnames(AnnotFile)[1]) != "TRUE") {
-    stop("Input file does not appear to be output of annotatePEaks.pl")
+    stop("Input file does not appear to be output of annotatePeaks.pl")
   }
   
   ## By default homer calls everything promoter that is -1000 to +100 bp
