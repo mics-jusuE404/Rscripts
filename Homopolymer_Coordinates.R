@@ -13,9 +13,6 @@ options(scipen=999)
 
 ###################################################################################################################
 ###################################################################################################################
-## Select your genome:
-hg38 <- BSgenome.Hsapiens.UCSC.hg38
-
 
 ## Helper function for pattern matching:
 ## Function searches a given chromosome (chr) of the BSgenome (tmp.genome) for pattern matches (given.seq)
