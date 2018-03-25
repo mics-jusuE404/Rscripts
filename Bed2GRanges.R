@@ -11,8 +11,8 @@ Bed2GRanges <- function(BED, ChromSizes, Stranded){
   require(GenomicRanges)
   require(data.table)
   
-  tmp.bed <- fread(file = BED, data.table = F)
-  tmp.chromSize <- read.table(file = ChromSizes, sep="\t", header = FALSE)
+  tmp.bed       <- fread(file = BED, data.table = F, header = F)
+  tmp.chromSize <- read.table(file = ChromSizes, sep="\t", header = F)
   
   ## GRanges constructor: Note that GRanges is 1-based and BED is 0-based, therefore tmp.bed[,2] + 1:
   tmp_granges <- GRanges(seqnames=as.character(tmp.bed[,1]),
@@ -37,5 +37,5 @@ Bed2GRanges <- function(BED, ChromSizes, Stranded){
 }
 
 ## Example:
-Bed2GRanges(BED = "~/test.bed", ChromSizes = "/Volumes/Rumpelkammer/Genomes/hg19/hg19_chromSizes.txt", Stranded = "y")
+Bed2GRanges(BED = "~/test.bed", ChromSizes = "hg19_chromSizes.txt", Stranded = "y")
 
