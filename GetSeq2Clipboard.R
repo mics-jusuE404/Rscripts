@@ -2,12 +2,11 @@
 #### Tested only on macOS 10.12.5
 #### Written by Alexander Toenges, 02/2018
 #### BSgenome takes 1-based coordinates
-#### ... and the script does not protects you from overloading your clipboard when querying like 10^6 basepairs, so be careful =)
+#### ... and the script does not protects you from overloading your clipboard when querying a lot of basepairs, so be careful =)
 
 ##################################################################################################################################
 ##################################################################################################################################
 
-require(BSgenome.Hsapiens.UCSC.hg38)
 require(Biostrings)
 require(clipr)
 
@@ -27,4 +26,5 @@ GetSeq2Clipboard <- function(BSgenome, Coords){
 }
 
 ## Example:
+require(BSgenome.Hsapiens.UCSC.hg38)
 GetSeq2Clipboard(BSgenome.Hsapiens.UCSC.hg38, "chr1:444444-444460") # AATCCAGGAGCTGGTTT
