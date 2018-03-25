@@ -7,14 +7,16 @@
 
 require(GenomicAlignments)
 
-## Avoid floating point numbers for large chromosome coordinates
+## Avoid floating point numbers for large chromosome coordinates which would corrupt the BED format
 options(scipen=999)
 
 #############################################################################################################################
 #############################################################################################################################
 
-## Tiny function:
-GRanges2bedGraph <- function(GR, bedGraph, RPM, Gzip){
+## Wrapper:
+GRanges2bedGraph <- function(GR, bedGraph, RPM = "n", Gzip = "n"){
+  
+  if (class(GR) != "GRanges")  stop("GR is not a GRanges object!")
   
   totalReads   <- length(GR)
   tmp.Coverage <- as(coverage(GR), "GRanges")
@@ -24,18 +26,16 @@ GRanges2bedGraph <- function(GR, bedGraph, RPM, Gzip){
   }
   
   if(Gzip == "y") {
-    write.table(
-      data.frame(seqnames(tmp.Coverage), start(tmp.Coverage)-1, end(tmp.Coverage), tmp.Coverage$score),
-      sep="\t", quote = F, col.names = F, row.names = F, file = gzfile(bedGraph)
-    )
+    tmp.file <- gzfile(bedGraph)
   } else {
-      write.table(
-        data.frame(seqnames(tmp.Coverage), start(tmp.Coverage)-1, end(tmp.Coverage), tmp.Coverage$score),
-        sep="\t", quote = F, col.names = F, row.names = F, file = bedGraph
-      )
-    }
+    tmp.file <- bedGraph
+  }
+  
+  write.table(
+    data.frame(seqnames(tmp.Coverage), start(tmp.Coverage)-1, end(tmp.Coverage), tmp.Coverage$score),
+    sep="\t", quote = F, col.names = F, row.names = F, file = tmp.file
+  )
 }
-
 
 ## Example
 GRanges2bedGraph(GR = data.granges, bedGraph = "~/file.bedGraph.gz", RPM = "y", Gzip = "y")
