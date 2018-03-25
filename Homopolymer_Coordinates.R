@@ -2,21 +2,21 @@
 ###### Written by Alexander Toenges (a.toenges@uni-muenster.de)
 
 ###################################################################################################################
-###################################################################################################################
-require(BSgenome.Hsapiens.UCSC.hg38)
+
 require(Biostrings)
 require(GenomicRanges)
-## Avoid floating point numbers for larger genomic coordinates:
-options(scipen=999)
-###################################################################################################################
-###################################################################################################################
 
 ###################################################################################################################
+
+## Avoid floating point numbers for larger genomic coordinates:
+options(scipen=999)
+
 ###################################################################################################################
 
 ## Helper function for pattern matching:
 ## Function searches a given chromosome (chr) of the BSgenome (tmp.genome) for pattern matches (given.seq)
 ## Example: seq.check("AAAAAA", "chr1", BSgenome.Hsapiens.UCSC.hg38)
+
 seq.check <- function(given.seq, chr, tmp.genome){
   
   ## Subset BSgenome to chromosome of interest:
@@ -25,37 +25,45 @@ seq.check <- function(given.seq, chr, tmp.genome){
   ## Get all (also redundant) coordinates of the exact pattern match:
   tmp.match <- matchPattern(given.seq, getSeq(tmp.genome, chr))
   
-  ## Transform to non-redundant granges:
-  return( GenomicRanges::reduce( GRanges(seqnames = chr, ranges = ranges(tmp.match))) )
- 
+  ## If no matches are found, output empty GRanges, else output GRanges with unique coordinates:
+  if (length(tmp.match@ranges) == 0){
+    return(
+      GRanges()
+    )
+  } else{ 
+      return( 
+        suppressWarnings(GenomicRanges::reduce(GRanges(seqnames = chr, ranges = ranges(tmp.match))))
+      )
+    }
 }
 
 ## Function that uses seq.check() to output a granges with coordinates of all defined homopolymers in the genome:
-find.Homopolymers <- function(Nucleotide, NLength, Query.Genome){
+find.Homopolymers <- function(Nucleotide, PolyXLength, Query.Genome, Cores = 1){
+  
+  ## Lapply-based function to scan all chromosomes of the BSgenome for the intended Nucleotide of length PolyXLength
+  ## Return as GRanges
   return(
-    do.call("c", mclapply(paste("chr", c(seq(1,22), "X", "Y"), sep=""), function(x) 
-      seq.check(
-        paste(replicate(NLength, Nucleotide), collapse = ""), x, Query.Genome), mc.cores=8)
+    suppressWarnings(
+      do.call("c", 
+        mclapply(as.character(Query.Genome@seqinfo@seqnames), function(x) seq.check(
+                      paste(replicate(PolyXLength, Nucleotide), collapse = ""), x, Query.Genome), 
+                      mc.cores = Cores)
+      )
     )
   )
 }
 
 ###################################################################################################################
-###################################################################################################################
 
-## Here an example for all homopolymers of length 6 or larger:
-Homopolymer6_hg38.gr  <- do.call("c", list(find.Homopolymers("A", 6, BSgenome.Hsapiens.UCSC.hg38),
-                                           find.Homopolymers("T", 6, BSgenome.Hsapiens.UCSC.hg38),
-                                           find.Homopolymers("C", 6, BSgenome.Hsapiens.UCSC.hg38),
-                                           find.Homopolymers("G", 6, BSgenome.Hsapiens.UCSC.hg38)
-                                          )
-                                 )
+## Example:
+require(BSgenome.Ecoli.NCBI.20080805)
+PolyA5_EColi <- find.Homopolymers(Nucleotide = "A", PolyXLength = 5, Query.Genome = BSgenome.Ecoli.NCBI.20080805)
 
-# Write 1-based granges to 0-based BED file on disk:
-write.table(
-  data.frame(
-    seqnames(homoPolymerHexa.gr),
-    start(homoPolymerHexa.gr)-1,
-    end(homoPolymerHexa.gr)
-  ), quote = F, col.names = F, row.names = F, sep="\t", file="Homopolymers_6AndMore_hg38.bed")
+## Here querying all ATCG PolyX of 5 or longer:
+PolyAll5_EColi  <- do.call("c", list(find.Homopolymers("A", 5, BSgenome.Ecoli.NCBI.20080805),
+                                     find.Homopolymers("T", 5, BSgenome.Ecoli.NCBI.20080805),
+                                     find.Homopolymers("C", 5, BSgenome.Ecoli.NCBI.20080805),
+                                     find.Homopolymers("G", 5, BSgenome.Ecoli.NCBI.20080805)
+                                )
+                    )
 
