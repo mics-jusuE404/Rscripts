@@ -57,9 +57,11 @@ find.Homopolymers <- function(Nucleotide, PolyXLength, Query.Genome, Cores = 1){
 
 ## Example:
 require(BSgenome.Ecoli.NCBI.20080805)
+
+## 1: Find polyA's of at least 5bp length:
 PolyA5_EColi <- find.Homopolymers(Nucleotide = "A", PolyXLength = 5, Query.Genome = BSgenome.Ecoli.NCBI.20080805)
 
-## Here querying all ATCG PolyX of 5 or longer:
+## 2: Find all (polyATCG) of at least 5bp length:
 PolyAll5_EColi  <- do.call("c", list(find.Homopolymers("A", 5, BSgenome.Ecoli.NCBI.20080805),
                                      find.Homopolymers("T", 5, BSgenome.Ecoli.NCBI.20080805),
                                      find.Homopolymers("C", 5, BSgenome.Ecoli.NCBI.20080805),
