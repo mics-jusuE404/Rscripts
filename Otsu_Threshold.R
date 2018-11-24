@@ -1,9 +1,8 @@
+#!/$HOME/anaconda3/envs/R/bin/Rscript
 #### Take a list of integers and find a threshold that splits these integers into two groups,
 #### aiming to minimize intragroup variance but maximize intergroup variance.
 #### Based on Otsu's threshold and code pretty much copied from <https://en.wikipedia.org/wiki/Otsu%27s_method>
-#### Modifications are the log10 transformation to make it suitable for larger integers as common in NGS
-#### (log10 because Otsu was developped for 256-grayscale picture manipulation, and original code does not perform
-####  well without log10)
+#### Modifications are the log10 transformation to make it suitable for datasets with large dispersion as common in NGS
 #### Might be suitable if NGS data show strong bimodal distribution and any thresholding is desired (beyond by-eye methods)
 
 Otsu_NGS <- function(COUNTS){
