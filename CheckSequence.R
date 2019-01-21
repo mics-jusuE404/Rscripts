@@ -23,6 +23,15 @@ CheckSequence <- function(QUERY, CHR, GENOME){
   return(df.out)
 }
 
-## Example:
+## Example for a single chromosome:
 library(BSgenome.Hsapiens.UCSC.hg38)
 CheckSequence(QUERY = "CAACAAGGTGCCAAGTCTTTT", CHR = "chr11", GENOME = BSgenome.Hsapiens.UCSC.hg38)
+
+## and for all chromosomes (takes like 10 seconds or so):
+do.call(rbind, 
+        mclapply(paste("chr", c(seq(1,22), "X", "Y"), sep=""), function(x) {
+          return(CheckSequence(QUERY = "CAACAAGGTGCCAAGTCTTTT", CHR = x, GENOME = BSgenome.Hsapiens.UCSC.hg38))
+          }, mc.cores=16
+        )
+)
+
