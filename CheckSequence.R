@@ -6,17 +6,19 @@ CheckSequence <- function(QUERY, CHR, GENOME){
   
   library(Biostrings)
   
+  ## select chromosome of BSgenome:
   toScan <- GENOME[[which(GENOME@seqinfo@seqnames == CHR)]]
   
+  ## match sequence and reverse complement:
   matched_fwd <- matchPattern(QUERY, toScan)
   matched_rev <- matchPattern(as.character(reverseComplement(DNAString(QUERY))), toScan)
  
-   ## no result:
+   ## if no result:
   if (length(matched_fwd) == 0 & length(matched_rev) == 0){
     df.out <- data.frame(chr="NA", start="NA", end="NA", sequence=QUERY, strand="NA")
   }
   
-  ## is result:
+  ## if result:
   df.out <- data.frame(chr=NULL, start=NULL, end=NULL, sequence=NULL, strand=NULL)
   if (length(matched_fwd) > 0) df.out <- rbind(df.out, data.frame(chr=CHR, start=start(matched_fwd), end=end(matched_fwd), sequence=QUERY, strand=as.character("+")))
   if (length(matched_rev) > 0) df.out <- rbind(df.out, data.frame(chr=CHR, start=start(matched_rev), end=end(matched_rev), sequence=QUERY, strand="-"))
