@@ -1,39 +1,26 @@
-## Simply function to check a given DNA sequence (e.g. a primer sequence) for perfect match 
-## against both strands of a chromosome from a BSgenome, returning a data frame with the 
-## position and strand (or an empty one if no match):
+## Simply function to checks a BSgenome for occurrence of a given sequence, returning a reduced GRanges:
 
-CheckSequence <- function(QUERY, CHR, GENOME){
-  
-  library(Biostrings)
-  
-  ## select chromosome of BSgenome:
-  toScan <- GENOME[[which(GENOME@seqinfo@seqnames == CHR)]]
-  
-  ## match sequence and reverse complement:
-  matched_fwd <- matchPattern(QUERY, toScan)
-  matched_rev <- matchPattern(as.character(reverseComplement(DNAString(QUERY))), toScan)
- 
-   ## if no result:
-  if (length(matched_fwd) == 0 & length(matched_rev) == 0){
-    df.out <- data.frame(chr="NA", start="NA", end="NA", sequence=QUERY, strand="NA")
-  }
-  
-  ## if result:
-  df.out <- data.frame(chr=NULL, start=NULL, end=NULL, sequence=NULL, strand=NULL)
-  if (length(matched_fwd) > 0) df.out <- rbind(df.out, data.frame(chr=CHR, start=start(matched_fwd), end=end(matched_fwd), sequence=QUERY, strand=as.character("+")))
-  if (length(matched_rev) > 0) df.out <- rbind(df.out, data.frame(chr=CHR, start=start(matched_rev), end=end(matched_rev), sequence=QUERY, strand="-"))
-  return(df.out)
+###### Script to find a specific pattern in a BSgenome returning a GRanges object with the coordinates:
+
+require(Biostrings)
+require(GenomicRanges)
+require(BSgenome.Hsapiens.UCSC.hg38)
+options(scipen=999)
+
+FindPolyX <- function(QUERY, BSGENOME, CORES=16){
+
+  all.matches <- mclapply(1:length(seqnames(BSGENOME)), function(x) {
+
+                    tmp.match <- matchPattern(QUERY, BSGENOME[[x]])
+
+                    if (length(tmp.match) > 0) {
+                      tmp.gr    <- GRanges(seqnames = seqnames(BSGENOME)[x],
+                                                      ranges = ranges(tmp.match))
+                      return(GenomicRanges::reducetmp.gr))
+                    }
+
+                  }, mc.cores = CORES)
+  return(suppressWarnings( do.call("c", all.matches) ) )
 }
 
-## Example for a single chromosome:
-library(BSgenome.Hsapiens.UCSC.hg38)
-CheckSequence(QUERY = "CAACAAGGTGCCAAGTCTTTT", CHR = "chr11", GENOME = BSgenome.Hsapiens.UCSC.hg38)
-
-## and for all chromosomes (takes like 10 seconds or so):
-do.call(rbind, 
-        mclapply(paste("chr", c(seq(1,22), "X", "Y"), sep=""), function(x) {
-          return(CheckSequence(QUERY = "CAACAAGGTGCCAAGTCTTTT", CHR = x, GENOME = BSgenome.Hsapiens.UCSC.hg38))
-          }, mc.cores=16
-        )
-)
-
+FindPolyX(QUERY = "AAAAAAAAAAAA", BSGENOME = BSgenome.Hsapiens.UCSC.hg38)
