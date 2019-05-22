@@ -16,7 +16,7 @@ FindPolyX <- function(QUERY, BSGENOME, CORES=16){
                     if (length(tmp.match) > 0) {
                       tmp.gr    <- GRanges(seqnames = seqnames(BSGENOME)[x],
                                                       ranges = ranges(tmp.match))
-                      return(GenomicRanges::reducetmp.gr))
+                      return(GenomicRanges::reduce(tmp.gr))
                     }
 
                   }, mc.cores = CORES)
