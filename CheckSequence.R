@@ -9,6 +9,9 @@ options(scipen=999)
 
 FindPolyX <- function(QUERY, BSGENOME, CORES=16){
 
+  ## remove whitespaces if input contains some:
+  QUERY < -DNAString( gsub(" ", "", as.character(QUERY)) )
+  
   all.matches <- mclapply(1:length(seqnames(BSGENOME)), function(x) {
 
                     tmp.match <- matchPattern(QUERY, BSGENOME[[x]])
