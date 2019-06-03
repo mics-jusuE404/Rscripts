@@ -23,7 +23,7 @@ FindPolyX <- function(QUERY, BSGENOME, CORES=16){
                     }
 
                   }, mc.cores = CORES)
-  return(suppressWarnings( do.call("c", all.matches) ) )
+  return(suppressWarnings( do.call("c", unlist(all.matches) ) ) )
 }
 
 FindPolyX(QUERY = "AAAAAAAAAAAA", BSGENOME = BSgenome.Hsapiens.UCSC.hg38)
