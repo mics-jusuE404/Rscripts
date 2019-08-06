@@ -1,14 +1,12 @@
-## Simply function to checks a BSgenome for occurrence of a given sequence, returning a reduced GRanges:
+## Check BSgenome for perfect matches of a nucleotide string,
+## outputs reduced GRanges object:
 
-###### Script to find a specific pattern in a BSgenome returning a GRanges object with the coordinates:
+CheckSequence <- function(QUERY, BSGENOME, CORES=16){
 
-require(Biostrings)
-require(GenomicRanges)
-require(BSgenome.Hsapiens.UCSC.hg38)
-options(scipen=999)
-
-FindPolyX <- function(QUERY, BSGENOME, CORES=16){
-
+  require(Biostrings)
+  require(GenomicRanges)
+  options(scipen=999)
+  
   ## remove whitespaces if input contains some:
   QUERY < -DNAString( gsub(" ", "", as.character(QUERY)) )
   
@@ -26,4 +24,5 @@ FindPolyX <- function(QUERY, BSGENOME, CORES=16){
   return(suppressWarnings( do.call("c", unlist(all.matches) ) ) )
 }
 
-FindPolyX(QUERY = "AAAAAAAAAAAA", BSGENOME = BSgenome.Hsapiens.UCSC.hg38)
+library(BSgenome.Hsapiens.UCSC.hg38)
+CheckSequence(QUERY = "AAAAAAAAAAAA", BSGENOME = BSgenome.Hsapiens.UCSC.hg38)
